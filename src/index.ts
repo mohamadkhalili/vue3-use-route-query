@@ -1,6 +1,6 @@
 import { reactive, readonly, ref } from 'vue';
 import {default as SnackbarMessage} from './components/SnackbarMessage.vue';
-import type { status, Snackbar } from './plugins/types'
+import type { status, Snackbar } from './types'
 
 export const snackbarState: Snackbar = reactive({
   status: 'info',
