@@ -1,9 +1,27 @@
-# Vue 3 + TypeScript + Vite
+# vue3-snackbar-reactive
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+`vue3-snackbar-reactive` is a Vue 3 component designed for displaying snackbar notifications. It is reactive and easily configurable, allowing for the display of information, success, error, and warning messages. This guide will cover how to install and use `vue3-snackbar-reactive` in your Vue 3 project.
 
-## Recommended Setup
+## Installation
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+Before using `vue3-snackbar-reactive`, ensure it is installed and properly imported into your Vue application.
 
-- Use [vue-tsc](https://github.com/vuejs/language-tools/tree/master/packages/tsc) for performing the same type checking from the command line, or for generating d.ts files for SFCs.
+### Importing Component and Styles
+
+First, import the `SnackbarComponent` and `SnackbarParam` into your project. Additionally, import the stylesheet to ensure the snackbar is displayed correctly.
+
+```javascript
+import { createApp } from 'vue';
+import App from './App.vue';
+import { SnackbarComponent, SnackbarParam } from '@/plugins/dist/index';
+import '@/plugins/dist/style.css';
+
+const app = createApp(App);
+
+// Register the SnackbarMessage component globally
+app.component('SnackbarMessage', SnackbarComponent);
+
+// Provide the SnackbarParam to make it available throughout the application
+app.provide('snackbar', SnackbarParam);
+
+app.mount('#app');
