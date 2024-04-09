@@ -2,6 +2,7 @@
   "name": "vue3-snackbar-reactive",
   "private": true,
   "version": "1.0.0",
+  "author": "Mohamad Khalili",
   "type": "module",
   "main": "dist/my-vue-component.umd.js",
   "module": "dist/my-vue-component.esm.js",
