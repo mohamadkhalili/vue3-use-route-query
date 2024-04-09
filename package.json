@@ -37,6 +37,6 @@
   "license": "MIT",
   "repository": {
 		"type": "git",
-		"url": "git+https://github.com/craigrileyuk/vue3-snackbar.git"
+		"url": "git+https://github.com/mohamadkhalili/vue3-snackbar-reactive.git"
 	}
 }
