@@ -7,9 +7,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: './src/index.ts',
-      name: 'snackbarMessage',
-      formats: ['es'],
-      fileName: (format) => `index.js`
+      name: 'index',
+      formats: ['es', 'cjs', 'umd'],
+      fileName: (format) => format === 'es' ? `index.js` : `index.${format}.js`
     },
     rollupOptions: {
       // Externalize Vue to not bundle it with your plugin

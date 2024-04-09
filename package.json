@@ -1,7 +1,6 @@
 {
   "name": "vue3-snackbar-reactive",
-  "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Mohamad Khalili",
   "type": "module",
   "main": "dist/my-vue-component.umd.js",
@@ -15,6 +14,14 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
+  "exports": {
+		".": {
+			"require": "./dist/index.cjs.js",
+			"import": "./dist/index.js",
+			"browser": "./dist/index.umd.js"
+		},
+		"./styles": "./dist/style.css"
+	},
   "dependencies": {
     "vite-plugin-dts": "^3.8.1",
     "vue": "^3.4.21"
