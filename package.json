@@ -1,0 +1,42 @@
+{
+  "name": "vue3-snackbar-reactive",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/my-vue-component.umd.js",
+  "module": "dist/my-vue-component.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vite-plugin-dts": "^3.8.1",
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vue-tsc": "^2.0.6"
+  },
+  "keywords": [
+		"Vue",
+		"Vue3",
+		"snackbar",
+		"toast",
+		"alerts",
+		"messages",
+		"dialog",
+    "reactive"
+	],
+  "license": "MIT",
+  "repository": {
+		"type": "git",
+		"url": "git+https://github.com/craigrileyuk/vue3-snackbar.git"
+	}
+}
