@@ -1,6 +1,5 @@
 <template>
   <SnackbarMessage />
-
   <div class="home">
     <button @click="show('success')">Show Success</button>
     <button @click="show('error')">Show Error</button>
