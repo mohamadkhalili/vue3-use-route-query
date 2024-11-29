@@ -1,6 +1,6 @@
 {
   "name": "vue3-use-route-query",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "author": "Mohamad Khalili",
   "type": "module",
   "main": "dist/my-vue-component.umd.js",
@@ -36,11 +36,11 @@
   "keywords": [
     "Vue",
     "Vue3",
-    "snackbar",
-    "toast",
-    "alerts",
-    "messages",
-    "dialog",
+    "useRouteQuery",
+    "route",
+    "routeQuery",
+    "query",
+    "queryParam",
     "reactive"
   ],
   "license": "MIT",
