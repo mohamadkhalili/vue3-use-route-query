@@ -1,5 +1,5 @@
 {
-  "name": "vue3-snackbar-reactive",
+  "name": "vue3-use-route-query",
   "version": "1.1.0",
   "author": "Mohamad Khalili",
   "type": "module",
@@ -15,13 +15,13 @@
     "preview": "vite preview"
   },
   "exports": {
-		".": {
-			"require": "./dist/index.cjs.js",
-			"import": "./dist/index.js",
-			"browser": "./dist/index.umd.js"
-		},
-		"./styles": "./dist/style.css"
-	},
+    ".": {
+      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.js",
+      "browser": "./dist/index.umd.js"
+    },
+    "./styles": "./dist/style.css"
+  },
   "dependencies": {
     "vite-plugin-dts": "^3.8.1",
     "vue": "^3.4.21"
@@ -30,6 +30,7 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
+    "vue-router": "^4.5.0",
     "vue-tsc": "^2.0.6"
   },
   "keywords": [
@@ -45,11 +46,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mohamadkhalili/vue3-snackbar-reactive.git"
+    "url": "git+https://github.com/mohamadkhalili/vue3-use-route-query.git"
   },
   "description": "This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.",
   "bugs": {
-    "url": "https://github.com/mohamadkhalili/vue3-snackbar-reactive/issues"
+    "url": "https://github.com/mohamadkhalili/vue3-use-route-query/issues"
   },
-  "homepage": "https://github.com/mohamadkhalili/vue3-snackbar-reactive#readme"
+  "homepage": "https://github.com/mohamadkhalili/vue3-use-route-query#readme"
 }
