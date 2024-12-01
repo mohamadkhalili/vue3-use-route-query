@@ -1,3 +1,3 @@
 import { useRouteQuery } from './useRouteQuery';
 
-export default useRouteQuery;
+export { useRouteQuery };
