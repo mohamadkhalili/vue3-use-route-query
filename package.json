@@ -1,6 +1,6 @@
 {
   "name": "vue3-use-route-query",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Mohamad Khalili",
   "type": "module",
   "main": "dist/my-vue-component.umd.js",
@@ -19,22 +19,20 @@
       "require": "./dist/index.cjs.js",
       "import": "./dist/index.js",
       "browser": "./dist/index.umd.js"
-    },
-    "./styles": "./dist/style.css"
+    }
   },
   "dependencies": {
-    "vite-plugin-dts": "^3.8.1",
-    "vue": "^3.4.21"
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.4",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "^5.6.2",
+    "vite": "^6.0.1",
+    "vite-plugin-dts": "^4.3.0",
     "vue-router": "^4.5.0",
-    "vue-tsc": "^2.0.6"
+    "vue-tsc": "^2.1.10"
   },
   "keywords": [
-    "Vue",
     "Vue3",
     "useRouteQuery",
     "route",

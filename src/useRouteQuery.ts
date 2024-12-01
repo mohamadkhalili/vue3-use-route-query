@@ -54,34 +54,34 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
             queryValue.value = route.query?.[key] as any
 
     watch(queryValue, () => {
-        let newQuery: any = undefined
+        // let newQuery: any = undefined
         switch (config?.type) {
             case 'Boolean':
-                newQuery = { ...route.query, [key]: queryValue.value ? 'true' : 'false' };
+                // newQuery = { ...route.query, [key]: queryValue.value ? 'true' : 'false' };
                 (window as any).addQueryParam({ [key]: queryValue.value ? 'true' : 'false' }, config?.navigationType);
                 break;
             case 'Integer':
-                newQuery = { ...route.query, [key]: queryValue.value };
+                // newQuery = { ...route.query, [key]: queryValue.value };
                 (window as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
             case 'Float':
-                newQuery = { ...route.query, [key]: queryValue.value };
+                // newQuery = { ...route.query, [key]: queryValue.value };
                 (window as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
             case 'String':
-                newQuery = { ...route.query, [key]: queryValue.value };
+                // newQuery = { ...route.query, [key]: queryValue.value };
                 (window as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
             case 'Array':
-                newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
+                // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
                 (window as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<number>':
-                newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined };
+                // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined };
                 (window as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<string>':
-                newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
+                // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
                 (window as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<object>': {
@@ -94,7 +94,7 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                 else if (!!queryValue.value) {
                     newQueryValue.push(encodeURIComponent(JSON.stringify(queryValue.value)))
                 }
-                newQuery = { ...route.query, [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined };
+                // newQuery = { ...route.query, [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined };
                 (window as any).addQueryParam({ [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             }
@@ -107,7 +107,7 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
     });
 
 
-    watch(() => route.query[key], (newVal) => {
+    watch(() => route.query[key], (newVal: any) => {
 
         if (newVal !== queryValue.value) {
             switch (config?.type) {
