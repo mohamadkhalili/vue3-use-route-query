@@ -1,6 +1,7 @@
 // src/index.ts
 import { App } from 'vue';
 import { useRouteQuery } from './composables/useRouteQuery';
+import type { typeQueryValues, typeQuery } from './composables/useRouteQuery';
 
 export default {
     install(app: App) {
@@ -9,3 +10,4 @@ export default {
 };
 
 export { useRouteQuery };
+export type { typeQueryValues, typeQuery }
