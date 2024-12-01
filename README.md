@@ -83,8 +83,6 @@ The <code>type</code> field in the configuration defines how the query parameter
 
 * <code>Array`<object>`</code>: Interprets the value as a comma-separated list of JSON-encoded objects.
 
-* <code>Array`<number>`</code>: Interprets the value as a comma-separated list of numbers.
-
 #### Example of Different Types
 
 ##### Boolean Type
