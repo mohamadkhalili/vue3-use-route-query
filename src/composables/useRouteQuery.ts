@@ -3,14 +3,18 @@ import { useRoute, useRouter } from 'vue-router';
 
 let route: any = undefined;
 let router: any = undefined;
-(window as any).paramsQueue = {};
+let globalParam = {}
+if (typeof window !== 'undefined') {
+    globalParam = window
+}
+(globalParam as any).paramsQueue = {};
 let timer: any = null;
-(window as any).addQueryParam = function (param: any, navigationType: 'push' | 'replace') {
-    (window as any).paramsQueue = { ...(window as any).paramsQueue, ...param };
+(globalParam as any).addQueryParam = function (param: any, navigationType: 'push' | 'replace') {
+    (globalParam as any).paramsQueue = { ...(globalParam as any).paramsQueue, ...param };
     if (timer === null) {
         timer = setTimeout(() => {
-            processParams((window as any).paramsQueue, navigationType);
-            (window as any).paramsQueue = {};
+            processParams((globalParam as any).paramsQueue, navigationType);
+            (globalParam as any).paramsQueue = {};
             timer = null;
         }, 30);
     }
@@ -58,31 +62,31 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
         switch (config?.type) {
             case 'Boolean':
                 // newQuery = { ...route.query, [key]: queryValue.value ? 'true' : 'false' };
-                (window as any).addQueryParam({ [key]: queryValue.value ? 'true' : 'false' }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value ? 'true' : 'false' }, config?.navigationType);
                 break;
             case 'Integer':
                 // newQuery = { ...route.query, [key]: queryValue.value };
-                (window as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
             case 'Float':
                 // newQuery = { ...route.query, [key]: queryValue.value };
-                (window as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
             case 'String':
                 // newQuery = { ...route.query, [key]: queryValue.value };
-                (window as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
             case 'Array':
                 // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
-                (window as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<number>':
                 // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined };
-                (window as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<string>':
                 // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
-                (window as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<object>': {
                 let newQueryValue = []
@@ -95,7 +99,7 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                     newQueryValue.push(encodeURIComponent(JSON.stringify(queryValue.value)))
                 }
                 // newQuery = { ...route.query, [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined };
-                (window as any).addQueryParam({ [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             }
             default:
