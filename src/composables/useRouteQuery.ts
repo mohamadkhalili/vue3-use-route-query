@@ -144,7 +144,7 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                     break;
             }
         }
-    }, { flush: 'sync' });
+    }, { flush: 'post' });
 
 
 
