@@ -108,7 +108,9 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
         }
         // router.push({ query: { ...newQuery } })
 
-    });
+    },
+        { deep: true }
+    );
 
 
     watch(() => route.query[key], (newVal: any) => {
