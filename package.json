@@ -1,6 +1,6 @@
 {
   "name": "vue3-use-route-query",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": "Mohamad Khalili",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",

@@ -53,7 +53,7 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
         else if (config?.type === 'Array<string>')
             queryValue.value = (route.query?.[key] as string)?.split(',')
         else if (config?.type === 'Array<object>')
-            queryValue.value = []
+            queryValue.value = ((route.query?.[key] as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item)));
         else
             queryValue.value = route.query?.[key] as any
 
@@ -78,15 +78,15 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                 break;
             case 'Array':
                 // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length >= 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<number>':
                 // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as number[])?.length >= 0 ? (queryValue.value as number[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<string>':
                 // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length >= 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             case 'Array<object>': {
                 let newQueryValue = []
@@ -95,11 +95,11 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                         newQueryValue.push(encodeURIComponent(JSON.stringify(item)))
                     }
                 }
-                else if (!!queryValue.value) {
+                else {
                     newQueryValue.push(encodeURIComponent(JSON.stringify(queryValue.value)))
                 }
                 // newQuery = { ...route.query, [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined }, config?.navigationType);
+                (globalParam as any).addQueryParam({ [key]: newQueryValue && newQueryValue?.length >= 0 ? (newQueryValue as string[])?.join(',') : undefined }, config?.navigationType);
                 break;
             }
             default:
