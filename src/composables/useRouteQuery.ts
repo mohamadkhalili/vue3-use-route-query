@@ -130,16 +130,16 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                     queryValue.value = newVal ? String(newVal) : undefined;
                     break;
                 case 'Array':
-                    queryValue.value = newVal ? ((newVal as string)?.split(',') || initialValue) : undefined;
+                    queryValue.value = newVal?.length >= 0 ? ((newVal as string)?.split(',') || initialValue) : [];
                     break;
                 case 'Array<number>':
-                    queryValue.value = newVal ? (((newVal as string)?.split(',')).map(Number) || initialValue) : undefined;
+                    queryValue.value = newVal?.length >= 0 ? (((newVal as string)?.split(',')).map(Number) || initialValue) : [];
                     break;
                 case 'Array<string>':
-                    queryValue.value = newVal ? ((newVal as string)?.split(',') || initialValue) : undefined;
+                    queryValue.value = newVal?.length >= 0 ? ((newVal as string)?.split(',') || initialValue) : [];
                     break;
                 case 'Array<object>':
-                    queryValue.value = newVal ? (((newVal as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item))) || initialValue) : undefined;
+                    queryValue.value = newVal?.length >= 0 ? (((newVal as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item))) || initialValue) : [];
                     break;
                 default:
                     console.warn('This query type not exist.')
