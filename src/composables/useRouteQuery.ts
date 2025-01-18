@@ -31,7 +31,7 @@ function processParams(params: any, navigationType: 'push' | 'replace') {
 
 
 export type typeQuery = boolean | number | string | Array<string> | Array<number> | undefined
-export type typeQueryValues = 'Boolean' | 'Integer' | 'Float' | 'String' | 'Array' | 'Array<number>' | 'Array<string>' | 'Array<object>' // next feature | 'Map'
+export type typeQueryValues = 'Boolean' | 'number' | 'Integer' | 'Float' | 'String' | 'Array' | 'Array<number>' | 'Array<string>' | 'Array<object>' // next feature | 'Map'
 /**
  * A composable to get and set URL query parameters reactively.
  * @param {string} key - The name of the query parameter.
@@ -64,6 +64,9 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                 // newQuery = { ...route.query, [key]: queryValue.value ? 'true' : 'false' };
                 (globalParam as any).addQueryParam({ [key]: queryValue.value ? 'true' : 'false' }, config?.navigationType);
                 break;
+            case 'number':
+                // newQuery = { ...route.query, [key]: queryValue.value };
+                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
             case 'Integer':
                 // newQuery = { ...route.query, [key]: queryValue.value };
                 (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
@@ -120,6 +123,9 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                 case 'Boolean':
                     queryValue.value = newVal === 'true' ? true : false;
                     break;
+                case 'number':
+                    queryValue.value = newVal ? Number(newVal) : undefined;
+                    break;
                 case 'Integer':
                     queryValue.value = newVal ? Number(newVal) : undefined;
                     break;
@@ -130,23 +136,23 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                     queryValue.value = newVal ? String(newVal) : undefined;
                     break;
                 case 'Array':
-                    queryValue.value = newVal?.length >= 0 ? ((newVal as string)?.split(',') || initialValue) : [];
+                    queryValue.value = newVal?.length > 0 ? ((newVal as string)?.split(',') || initialValue) : [];
                     break;
                 case 'Array<number>':
-                    queryValue.value = newVal?.length >= 0 ? (((newVal as string)?.split(',')).map(Number) || initialValue) : [];
+                    queryValue.value = newVal?.length > 0 ? (((newVal as string)?.split(',')).map(Number) || initialValue) : [];
                     break;
                 case 'Array<string>':
-                    queryValue.value = newVal?.length >= 0 ? ((newVal as string)?.split(',') || initialValue) : [];
+                    queryValue.value = newVal?.length > 0 ? ((newVal as string)?.split(',') || initialValue) : [];
                     break;
                 case 'Array<object>':
-                    queryValue.value = newVal?.length >= 0 ? (((newVal as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item))) || initialValue) : [];
+                    queryValue.value = newVal?.length > 0 ? (((newVal as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item))) || initialValue) : [];
                     break;
                 default:
                     console.warn('This query type not exist.')
                     break;
             }
         }
-    }, { flush: 'post' });
+    }, { flush: 'sync' });
 
 
 
