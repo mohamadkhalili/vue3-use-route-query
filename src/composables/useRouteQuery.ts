@@ -45,7 +45,7 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
     router = useRouter();
 
     const queryValue = ref(initialValue);
-    if (route.query?.[key])
+    if (route.query?.[key]) {
         if (config?.type === 'Array')
             queryValue.value = (route.query?.[key] as string)?.split(',')
         else if (config?.type === 'Array<number>')
@@ -54,8 +54,13 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
             queryValue.value = (route.query?.[key] as string)?.split(',')
         else if (config?.type === 'Array<object>')
             queryValue.value = ((route.query?.[key] as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item)));
+        else if (config?.type === 'number' || config?.type === 'Float' || config?.type === 'Integer')
+            queryValue.value = Number(route.query?.[key])
+        else if (config?.type === 'Boolean')
+            queryValue.value = route.query?.[key] === 'true' ? true : false
         else
             queryValue.value = route.query?.[key] as any
+    }
 
     watch(queryValue, () => {
         // let newQuery: any = undefined
