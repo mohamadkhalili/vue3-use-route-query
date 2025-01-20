@@ -31,7 +31,7 @@ function processParams(params: any, navigationType: 'push' | 'replace') {
 
 
 export type typeQuery = boolean | number | string | Array<string> | Array<number> | undefined
-export type typeQueryValues = 'Boolean' | 'number' | 'Integer' | 'Float' | 'String' | 'Array' | 'Array<number>' | 'Array<string>' | 'Array<object>' // next feature | 'Map'
+export type typeQueryValues = 'boolean' | 'number' | 'string' | 'Array' | 'Array<number>' | 'Array<string>' | 'Array<object>' // next feature | 'Map'
 /**
  * A composable to get and set URL query parameters reactively.
  * @param {string} key - The name of the query parameter.
@@ -39,7 +39,7 @@ export type typeQueryValues = 'Boolean' | 'number' | 'Integer' | 'Float' | 'Stri
  * @returns {Object} - Contains the query parameter's reactive value.
  */
 
-export function useRouteQuery(key: string, initialValue: typeQuery, config: { type: typeQueryValues, navigationType: 'push' | 'replace' } = { type: 'String', navigationType: 'replace' }) {
+export function useRouteQuery(key: string, initialValue: typeQuery, config: { type: typeQueryValues, navigationType: 'push' | 'replace' } = { type: 'string', navigationType: 'replace' }) {
 
     route = useRoute();
     router = useRouter();
@@ -54,9 +54,9 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
             queryValue.value = (route.query?.[key] as string)?.split(',')
         else if (config?.type === 'Array<object>')
             queryValue.value = ((route.query?.[key] as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item)));
-        else if (config?.type === 'number' || config?.type === 'Float' || config?.type === 'Integer')
+        else if (config?.type === 'number')
             queryValue.value = Number(route.query?.[key])
-        else if (config?.type === 'Boolean')
+        else if (config?.type === 'boolean')
             queryValue.value = route.query?.[key] === 'true' ? true : false
         else
             queryValue.value = route.query?.[key] as any
@@ -65,22 +65,15 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
     watch(queryValue, () => {
         // let newQuery: any = undefined
         switch (config?.type) {
-            case 'Boolean':
+            case 'boolean':
                 // newQuery = { ...route.query, [key]: queryValue.value ? 'true' : 'false' };
                 (globalParam as any).addQueryParam({ [key]: queryValue.value ? 'true' : 'false' }, config?.navigationType);
                 break;
             case 'number':
                 // newQuery = { ...route.query, [key]: queryValue.value };
                 (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
-            case 'Integer':
-                // newQuery = { ...route.query, [key]: queryValue.value };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
-            case 'Float':
-                // newQuery = { ...route.query, [key]: queryValue.value };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
-                break;
-            case 'String':
+            case 'string':
                 // newQuery = { ...route.query, [key]: queryValue.value };
                 (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
                 break;
@@ -125,20 +118,14 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
 
         if (newVal !== queryValue.value) {
             switch (config?.type) {
-                case 'Boolean':
+                case 'boolean':
                     queryValue.value = newVal === 'true' ? true : false;
                     break;
                 case 'number':
                     queryValue.value = newVal ? Number(newVal) : undefined;
                     break;
-                case 'Integer':
-                    queryValue.value = newVal ? Number(newVal) : undefined;
-                    break;
-                case 'Float':
-                    queryValue.value = newVal ? Number(newVal) : undefined;
-                    break;
-                case 'String':
-                    queryValue.value = newVal ? String(newVal) : undefined;
+                case 'string':
+                    queryValue.value = newVal ? string(newVal) : undefined;
                     break;
                 case 'Array':
                     queryValue.value = newVal?.length > 0 ? ((newVal as string)?.split(',') || initialValue) : [];

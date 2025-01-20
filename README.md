@@ -1,6 +1,6 @@
 # vue3-use-route-query
 
-A Vue 3 composable to get and set URL query parameters reactively with support for different data types like `String`, `Boolean`, `Array`, `Integer`, and `Float`.
+A Vue 3 composable to get and set URL query parameters reactively with support for different data types like `string`, `boolean`, `Array`, `number`, and `...`.
 
 ## Installation
 
@@ -41,7 +41,7 @@ export default defineComponent({
   setup() {
     // Use useRouteQuery to bind a query parameter to a reactive value
     const myParam = useRouteQuery('myParam', 'defaultValue', {
-      type: 'String',
+      type: 'string',
       navigationType: 'replace',
     });
 
@@ -60,20 +60,18 @@ The <code>useRouteQuery</code> composable accepts three parameters:
 1. <code>key</code> (<code>string</code>): The name of the query parameter you want to manage.
 2. <code>initialValue</code> (<code>TypeQuery</code>): The initial value of the query parameter if it’s not already set in the URL.
 3. <code>config</code> (<code>UseRouteQueryConfig</code>): Configuration options for the query parameter.
-    * <code>type</code> (<code>TypeQueryValues</code>): The type of the query parameter. Can be one of '<code>Boolean'</code>, '<code>Integer</code>', '<code>Float</code>', '<code>String</code>', '<code>Array</code>', '<code>Array`<number>`</code>', '<code>Array`<string>`</code>', '<code>Array`<object>`</code>'.
+    * <code>type</code> (<code>TypeQueryValues</code>): The type of the query parameter. Can be one of '<code>boolean'</code>, '<code>number</code>', '<code>string</code>', '<code>Array</code>', '<code>Array`<number>`</code>', '<code>Array`<string>`</code>', '<code>Array`<object>`</code>'.
     * <code>navigationType</code> (<code>'push' | 'replace'</code>): The navigation type used to update the query parameter in the URL. Use <code>'push'</code> to add a new entry to the history stack or <code>'replace'</code> to replace the current history entry.
 
 #### Query Types
 
 The <code>type</code> field in the configuration defines how the query parameter should be processed. The following types are supported:
 
-* <code>Boolean</code>: Interprets the value as a boolean (<code>true</code> or <code>false</code>).
+* <code>boolean</code>: Interprets the value as a boolean (<code>true</code> or <code>false</code>).
 
-* <code>Integer</code>: Interprets the value as an integer number.
+* <code>number</code>: Interprets the value as an number number.
 
-* <code>Float</code>: Interprets the value as a floating-point number.
-
-* <code>String</code>: Interprets the value as a string.
+* <code>string</code>: Interprets the value as a string.
 
 * <code>Array</code>: Interprets the value as a comma-separated list of strings.
 
@@ -85,20 +83,20 @@ The <code>type</code> field in the configuration defines how the query parameter
 
 #### Example of Different Types
 
-##### Boolean Type
+##### boolean Type
 
 ```ts
 const isLoggedIn = useRouteQuery('isLoggedIn', false, {
-  type: 'Boolean',
+  type: 'boolean',
   navigationType: 'replace',
 });
 ```
 
-##### Integer Type
+##### number Type
 
 ```ts
 const userId = useRouteQuery('userId', 123, {
-  type: 'Integer',
+  type: 'number',
   navigationType: 'push',
 });
 ```
