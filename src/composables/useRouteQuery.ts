@@ -125,7 +125,7 @@ export function useRouteQuery(key: string, initialValue: typeQuery, config: { ty
                     queryValue.value = newVal ? Number(newVal) : undefined;
                     break;
                 case 'string':
-                    queryValue.value = newVal ? string(newVal) : undefined;
+                    queryValue.value = newVal ? String(newVal) : undefined;
                     break;
                 case 'Array':
                     queryValue.value = newVal?.length > 0 ? ((newVal as string)?.split(',') || initialValue) : [];
