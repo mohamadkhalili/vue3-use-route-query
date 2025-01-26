@@ -7,8 +7,10 @@ let globalParam = {}
 if (typeof window !== 'undefined') {
     globalParam = window
 }
+
 (globalParam as any).paramsQueue = {};
 let timer: any = null;
+
 (globalParam as any).addQueryParam = function (param: any, navigationType: 'push' | 'replace') {
     (globalParam as any).paramsQueue = { ...(globalParam as any).paramsQueue, ...param };
     if (timer === null) {
@@ -21,142 +23,201 @@ let timer: any = null;
 }
 
 function processParams(params: any, navigationType: 'push' | 'replace') {
-    if (router && route && params)
-        if (navigationType === 'push')
-            router.push({ query: { ...route.query, ...params } })
-        else
-            router.replace({ query: { ...route.query, ...params } })
-
+    if (router && route && params) {
+        if (navigationType === 'push') {
+            router.push({ query: { ...route.query, ...params } });
+        } else {
+            router.replace({ query: { ...route.query, ...params } });
+        }
+    }
 }
 
-
 export type typeQuery = boolean | number | string | Array<string> | Array<number> | undefined
-export type typeQueryValues = 'boolean' | 'number' | 'string' | 'Array' | 'Array<number>' | 'Array<string>' | 'Array<object>' // next feature | 'Map'
+export type typeQueryValues =
+    | 'boolean'
+    | 'number'
+    | 'string'
+    | 'Array'
+    | 'Array<number>'
+    | 'Array<string>'
+    | 'Array<object>';
+
+
+function encodeBoolean(value: boolean | undefined): string | undefined {
+    if (value === undefined) return undefined;
+    return value ? 'true' : 'false';
+}
+
+function decodeBoolean(value: string | undefined): boolean | undefined {
+    if (!value) return undefined;
+    return value === 'true';
+}
+
+function encodeNumber(value: number | undefined): number | undefined {
+    if (value === undefined) return undefined;
+    return value;
+}
+
+function decodeNumber(value: string | undefined): number | undefined {
+    if (!value) return undefined;
+    return Number(value);
+}
+
+function encodeString(value: string | undefined): string | undefined {
+    if (value === undefined) return undefined;
+    return value;
+}
+
+function decodeString(value: string | undefined): string | undefined {
+    if (!value) return undefined;
+    return value;
+}
+
+function encodeArray(value: string[] | number[] | undefined): string | undefined {
+    if (!value || value.length === 0) return undefined;
+    return value.join(',');
+}
+
+function decodeArray(value: string | undefined): string[] | undefined {
+    if (!value) return [];
+    return value.split(',');
+}
+
+function encodeArrayObject(value: any): string | undefined {
+    if (!value) return undefined;
+    if (!Array.isArray(value)) {
+        value = [value];
+    }
+    const result = value.map((item: any) =>
+        encodeURIComponent(JSON.stringify(item))
+    );
+    if (result.length === 0) return undefined;
+    return result.join(',');
+}
+
+function decodeArrayObject(value: string | undefined): any[] | undefined {
+    if (!value) return [];
+    const items = value.split(',');
+    return items.map((item: string) => JSON.parse(decodeURIComponent(item)));
+}
+
+export function encodeQueryValue(value: typeQuery, type: typeQueryValues): string | number | undefined {
+    switch (type) {
+        case 'boolean':
+            return encodeBoolean(value as boolean | undefined);
+        case 'number':
+            return encodeNumber(value as number | undefined);
+        case 'string':
+            return encodeString(value as string | undefined);
+        case 'Array':
+        case 'Array<string>':
+        case 'Array<number>':
+            return encodeArray(value as number[] | string[] | undefined);
+        case 'Array<object>':
+            return encodeArrayObject(value);
+        default:
+            console.warn('encodeQueryValue: unknow');
+            return undefined;
+    }
+}
+
+export function decodeQueryValue(
+    rawValue: string | undefined,
+    type: typeQueryValues,
+    initialValue: typeQuery
+): typeQuery {
+    switch (type) {
+        case 'boolean':
+            return decodeBoolean(rawValue);
+        case 'number':
+            return decodeNumber(rawValue);
+        case 'string':
+            return decodeString(rawValue);
+        case 'Array':
+        case 'Array<string>':
+        case 'Array<number>':
+            return decodeArray(rawValue);
+        case 'Array<object>':
+            return decodeArrayObject(rawValue);
+        default:
+            console.warn('decodeQueryValue: unknow');
+            return initialValue;
+    }
+}
+
 /**
- * A composable to get and set URL query parameters reactively.
- * @param {string} key - The name of the query parameter.
- * @param {string} initialValue - The initial value of the query parameter if not already set.
- * @returns {Object} - Contains the query parameter's reactive value.
+ * @param {string} key 
+ * @param {typeQuery} initialValue 
+ * @param {{ type: typeQueryValues, navigationType: 'push' | 'replace'}} config
+ * @returns {Object} 
  */
-
-export function useRouteQuery(key: string, initialValue: typeQuery, config: { type: typeQueryValues, navigationType: 'push' | 'replace' } = { type: 'string', navigationType: 'replace' }) {
-
+export function useRouteQuery(
+    key: string,
+    initialValue: typeQuery,
+    config: { type: typeQueryValues; navigationType: 'push' | 'replace' } = {
+        type: 'string',
+        navigationType: 'replace',
+    }
+) {
     route = useRoute();
     router = useRouter();
 
-    const queryValue = ref(initialValue);
+    const queryValue = ref<typeQuery>(initialValue);
+
     if (route.query?.[key]) {
-        if (config?.type === 'Array')
-            queryValue.value = (route.query?.[key] as string)?.split(',')
-        else if (config?.type === 'Array<number>')
-            queryValue.value = (route.query?.[key] as string)?.split(',').map(Number)
-        else if (config?.type === 'Array<string>')
-            queryValue.value = (route.query?.[key] as string)?.split(',')
-        else if (config?.type === 'Array<object>')
-            queryValue.value = ((route.query?.[key] as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item)));
-        else if (config?.type === 'number')
-            queryValue.value = Number(route.query?.[key])
-        else if (config?.type === 'boolean')
-            queryValue.value = route.query?.[key] === 'true' ? true : false
-        else
-            queryValue.value = route.query?.[key] as any
+        let rawValue = route.query[key] as string;
+        let decoded = decodeQueryValue(rawValue, config.type, initialValue);
+
+        if (config.type === 'Array<number>' && Array.isArray(decoded)) {
+            queryValue.value = decoded.map(Number);
+        }
+        else {
+            queryValue.value = decoded;
+        }
     }
 
-    watch(queryValue, () => {
-        // let newQuery: any = undefined
-        switch (config?.type) {
-            case 'boolean':
-                // newQuery = { ...route.query, [key]: queryValue.value ? 'true' : 'false' };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value ? 'true' : 'false' }, config?.navigationType);
-                break;
-            case 'number':
-                // newQuery = { ...route.query, [key]: queryValue.value };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
-                break;
-            case 'string':
-                // newQuery = { ...route.query, [key]: queryValue.value };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value }, config?.navigationType);
-                break;
-            case 'Array':
-                // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length >= 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
-                break;
-            case 'Array<number>':
-                // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as number[])?.length > 0 ? (queryValue.value as number[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as number[])?.length >= 0 ? (queryValue.value as number[])?.join(',') : undefined }, config?.navigationType);
-                break;
-            case 'Array<string>':
-                // newQuery = { ...route.query, [key]: queryValue.value && (queryValue.value as string[])?.length > 0 ? (queryValue.value as string[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: queryValue.value && (queryValue.value as string[])?.length >= 0 ? (queryValue.value as string[])?.join(',') : undefined }, config?.navigationType);
-                break;
-            case 'Array<object>': {
-                let newQueryValue = []
-                if (Array.isArray(queryValue.value)) {
-                    for (let item of queryValue.value) {
-                        newQueryValue.push(encodeURIComponent(JSON.stringify(item)))
-                    }
-                }
-                else {
-                    newQueryValue.push(encodeURIComponent(JSON.stringify(queryValue.value)))
-                }
-                // newQuery = { ...route.query, [key]: (newQueryValue)?.length > 0 ? (newQueryValue as string[])?.join(',') : undefined };
-                (globalParam as any).addQueryParam({ [key]: newQueryValue && newQueryValue?.length >= 0 ? (newQueryValue as string[])?.join(',') : undefined }, config?.navigationType);
-                break;
+    watch(
+        queryValue,
+        (newVal) => {
+            let encodedVal = encodeQueryValue(newVal, config.type);
+            if (config.type === 'Array<number>' && Array.isArray(newVal)) {
+                encodedVal = encodeArray(newVal);
             }
-            default:
-                console.warn('This query type not exist.')
-                break;
-        }
-        // router.push({ query: { ...newQuery } })
 
-    },
+            (globalParam as any).addQueryParam(
+                { [key]: encodedVal },
+                config.navigationType
+            );
+        },
         { deep: true }
     );
 
+    watch(
+        () => route.query[key],
+        (newVal: any) => {
+            if (newVal !== queryValue.value) {
+                let decoded = decodeQueryValue(newVal, config.type, initialValue);
 
-    watch(() => route.query[key], (newVal: any) => {
-
-        if (newVal !== queryValue.value) {
-            switch (config?.type) {
-                case 'boolean':
-                    queryValue.value = newVal === 'true' ? true : false;
-                    break;
-                case 'number':
-                    queryValue.value = newVal ? Number(newVal) : undefined;
-                    break;
-                case 'string':
-                    queryValue.value = newVal ? String(newVal) : undefined;
-                    break;
-                case 'Array':
-                    queryValue.value = newVal?.length > 0 ? ((newVal as string)?.split(',') || initialValue) : [];
-                    break;
-                case 'Array<number>':
-                    queryValue.value = newVal?.length > 0 ? (((newVal as string)?.split(',')).map(Number) || initialValue) : [];
-                    break;
-                case 'Array<string>':
-                    queryValue.value = newVal?.length > 0 ? ((newVal as string)?.split(',') || initialValue) : [];
-                    break;
-                case 'Array<object>':
-                    queryValue.value = newVal?.length > 0 ? (((newVal as string)?.split(','))?.map((item) => JSON.parse(decodeURIComponent(item))) || initialValue) : [];
-                    break;
-                default:
-                    console.warn('This query type not exist.')
-                    break;
+                if (config.type === 'Array<number>' && Array.isArray(decoded)) {
+                    queryValue.value = decoded.map(Number);
+                } else {
+                    queryValue.value = decoded;
+                }
             }
-        }
-    }, { flush: 'sync' });
-
-
+        },
+        { flush: 'sync' }
+    );
 
     if (!route.query[key] && initialValue !== undefined) {
-        if (config?.navigationType === 'push')
-            router.push({ query: { ...route.query } }).catch((err: any) => {
-                console.error(err);
-            });
-        else
-            router.replace({ query: { ...route.query } }).catch((err: any) => {
-                console.error(err);
-            });
+        if (config.navigationType === 'push') {
+            router
+                .push({ query: { ...route.query } })
+                .catch((err: any) => console.error(err));
+        } else {
+            router
+                .replace({ query: { ...route.query } })
+                .catch((err: any) => console.error(err));
+        }
     }
 
     return queryValue;
