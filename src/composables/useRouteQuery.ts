@@ -32,6 +32,9 @@ function processParams(params: any, navigationType: 'push' | 'replace') {
     }
 }
 
+// -----------------------------------
+// نوع‌های قابل پشتیبانی
+// -----------------------------------
 export type typeQuery = boolean | number | string | Array<string> | Array<number> | undefined
 export type typeQueryValues =
     | 'boolean'
@@ -43,6 +46,9 @@ export type typeQueryValues =
     | 'Array<object>';
 
 
+// -----------------------------------
+// توابع رمزگذاری و رمزگشایی
+// -----------------------------------
 function encodeBoolean(value: boolean | undefined): string | undefined {
     if (value === undefined) return undefined;
     return value ? 'true' : 'false';
@@ -65,25 +71,28 @@ function decodeNumber(value: string | undefined): number | undefined {
 
 function encodeString(value: string | undefined): string | undefined {
     if (value === undefined) return undefined;
-    return value;
+    return String(value);
 }
 
 function decodeString(value: string | undefined): string | undefined {
     if (!value) return undefined;
-    return value;
+    return String(value);
 }
 
-function encodeArray(value: string[] | number[] | undefined): string | undefined {
+/**
+ * @description در اینجا delimiter را به‌صورت پارامتر به توابع اضافه می‌کنیم.
+ */
+function encodeArray(value: (string | number)[] | undefined, delimiter: string = ','): string | undefined {
     if (!value || value.length === 0) return undefined;
-    return value.join(',');
+    return value.join(delimiter);
 }
 
-function decodeArray(value: string | undefined): string[] | undefined {
+function decodeArray(value: string | undefined, delimiter: string = ','): string[] | undefined {
     if (!value) return [];
-    return value.split(',');
+    return value.split(delimiter);
 }
 
-function encodeArrayObject(value: any): string | undefined {
+function encodeArrayObject(value: any, delimiter: string = ','): string | undefined {
     if (!value) return undefined;
     if (!Array.isArray(value)) {
         value = [value];
@@ -92,16 +101,23 @@ function encodeArrayObject(value: any): string | undefined {
         encodeURIComponent(JSON.stringify(item))
     );
     if (result.length === 0) return undefined;
-    return result.join(',');
+    return result.join(delimiter);
 }
 
-function decodeArrayObject(value: string | undefined): any[] | undefined {
+function decodeArrayObject(value: string | undefined, delimiter: string = ','): any[] | undefined {
     if (!value) return [];
-    const items = value.split(',');
+    const items = value.split(delimiter);
     return items.map((item: string) => JSON.parse(decodeURIComponent(item)));
 }
 
-export function encodeQueryValue(value: typeQuery, type: typeQueryValues): string | number | undefined {
+/**
+ * @description این تابع را نیز تغییر می‌دهیم تا delimiter را پشتیبانی کند.
+ */
+export function encodeQueryValue(
+    value: typeQuery,
+    type: typeQueryValues,
+    delimiter: string = ','
+): string | number | undefined {
     switch (type) {
         case 'boolean':
             return encodeBoolean(value as boolean | undefined);
@@ -112,19 +128,23 @@ export function encodeQueryValue(value: typeQuery, type: typeQueryValues): strin
         case 'Array':
         case 'Array<string>':
         case 'Array<number>':
-            return encodeArray(value as number[] | string[] | undefined);
+            return encodeArray(value as (number[] | string[]) | undefined, delimiter);
         case 'Array<object>':
-            return encodeArrayObject(value);
+            return encodeArrayObject(value, delimiter);
         default:
             console.warn('encodeQueryValue: unknow');
             return undefined;
     }
 }
 
+/**
+ * @description این تابع را نیز تغییر می‌دهیم تا delimiter را پشتیبانی کند.
+ */
 export function decodeQueryValue(
     rawValue: string | undefined,
     type: typeQueryValues,
-    initialValue: typeQuery
+    initialValue: typeQuery,
+    delimiter: string = ','
 ): typeQuery {
     switch (type) {
         case 'boolean':
@@ -136,9 +156,9 @@ export function decodeQueryValue(
         case 'Array':
         case 'Array<string>':
         case 'Array<number>':
-            return decodeArray(rawValue);
+            return decodeArray(rawValue, delimiter);
         case 'Array<object>':
-            return decodeArrayObject(rawValue);
+            return decodeArrayObject(rawValue, delimiter);
         default:
             console.warn('decodeQueryValue: unknow');
             return initialValue;
@@ -148,16 +168,25 @@ export function decodeQueryValue(
 /**
  * @param {string} key 
  * @param {typeQuery} initialValue 
- * @param {{ type: typeQueryValues, navigationType: 'push' | 'replace'}} config
+ * @param {{ 
+ *   type: typeQueryValues, 
+ *   navigationType: 'push' | 'replace',
+ *   delimiter?: string
+ * }} config
  * @returns {Object} 
  */
 export function useRouteQuery(
     key: string,
     initialValue: typeQuery,
-    config: { type: typeQueryValues; navigationType: 'push' | 'replace' } = {
-        type: 'string',
-        navigationType: 'replace',
-    }
+    config: {
+        type: typeQueryValues;
+        navigationType: 'push' | 'replace';
+        delimiter?: string;
+    } = {
+            type: 'string',
+            navigationType: 'replace',
+            delimiter: ',', // به‌صورت پیش‌فرض و در صورت نیاز کاربر، می‌توان مقدار آن را تغییر داد
+        }
 ) {
     route = useRoute();
     router = useRouter();
@@ -166,24 +195,23 @@ export function useRouteQuery(
 
     if (route.query?.[key]) {
         let rawValue = route.query[key] as string;
-        let decoded = decodeQueryValue(rawValue, config.type, initialValue);
-
+        let decoded = decodeQueryValue(rawValue, config.type, initialValue, config.delimiter);
         if (config.type === 'Array<number>' && Array.isArray(decoded)) {
             queryValue.value = decoded.map(Number);
-        }
-        else {
+        } else {
             queryValue.value = decoded;
         }
     }
 
+    // واکچ کردن مقدار queryValue برای اعمال تغییر در URL
     watch(
         queryValue,
         (newVal) => {
-            let encodedVal = encodeQueryValue(newVal, config.type);
+            let encodedVal = encodeQueryValue(newVal, config.type, config.delimiter);
             if (config.type === 'Array<number>' && Array.isArray(newVal)) {
-                encodedVal = encodeArray(newVal);
+                // اگر نوع آرایه عددی بود، مجدداً از encodeArray استفاده می‌کنیم
+                encodedVal = encodeArray(newVal, config.delimiter);
             }
-
             (globalParam as any).addQueryParam(
                 { [key]: encodedVal },
                 config.navigationType
@@ -192,12 +220,12 @@ export function useRouteQuery(
         { deep: true }
     );
 
+    // واکچ کردن مقدار موجود در route.query
     watch(
         () => route.query[key],
         (newVal: any) => {
             if (newVal !== queryValue.value) {
-                let decoded = decodeQueryValue(newVal, config.type, initialValue);
-
+                let decoded = decodeQueryValue(newVal, config.type, initialValue, config.delimiter);
                 if (config.type === 'Array<number>' && Array.isArray(decoded)) {
                     queryValue.value = decoded.map(Number);
                 } else {
@@ -208,6 +236,7 @@ export function useRouteQuery(
         { flush: 'sync' }
     );
 
+    // در صورتی که query خالی باشد ولی initialValue تعریف شده باشد
     if (!route.query[key] && initialValue !== undefined) {
         if (config.navigationType === 'push') {
             router
