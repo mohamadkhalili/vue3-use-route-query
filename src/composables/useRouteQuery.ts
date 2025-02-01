@@ -35,7 +35,7 @@ function processParams(params: any, navigationType: 'push' | 'replace') {
 // -----------------------------------
 // نوع‌های قابل پشتیبانی
 // -----------------------------------
-export type typeQuery = boolean | number | string | Array<string> | Array<number> | undefined
+export type typeQuery = boolean | number | string | Array<string> | Array<number> | Array<any> | undefined
 export type typeQueryValues =
     | 'boolean'
     | 'number'
@@ -87,8 +87,8 @@ function encodeArray(value: (string | number)[] | undefined, delimiter: string =
     return value.join(delimiter);
 }
 
-function decodeArray(value: string | undefined, delimiter: string = ','): string[] | undefined {
-    if (!value) return [];
+function decodeArray(value: string | undefined, initialValue: Array<string> | Array<number> | undefined, delimiter: string = ','): string[] | undefined {
+    if (!value) return Array.isArray(initialValue) ? initialValue.map(String) : undefined;
     return value.split(delimiter);
 }
 
@@ -104,8 +104,8 @@ function encodeArrayObject(value: any, delimiter: string = ','): string | undefi
     return result.join(delimiter);
 }
 
-function decodeArrayObject(value: string | undefined, delimiter: string = ','): any[] | undefined {
-    if (!value) return [];
+function decodeArrayObject(value: string | undefined, initialValue: any[] | undefined, delimiter: string = ','): any[] | undefined {
+    if (!value) return initialValue;
     const items = value.split(delimiter);
     return items.map((item: string) => JSON.parse(decodeURIComponent(item)));
 }
@@ -156,9 +156,9 @@ export function decodeQueryValue(
         case 'Array':
         case 'Array<string>':
         case 'Array<number>':
-            return decodeArray(rawValue, delimiter);
+            return decodeArray(rawValue, initialValue as string[] | number[] | undefined, delimiter);
         case 'Array<object>':
-            return decodeArrayObject(rawValue, delimiter);
+            return decodeArrayObject(rawValue, initialValue as any[] | undefined, delimiter);
         default:
             console.warn('decodeQueryValue: unknow');
             return initialValue;

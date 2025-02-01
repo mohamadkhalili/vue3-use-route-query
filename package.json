@@ -1,6 +1,6 @@
 {
   "name": "vue3-use-route-query",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "author": "Mohamad Khalili",
   "main": "dist/index.js",
   "module": "dist/index.js",
