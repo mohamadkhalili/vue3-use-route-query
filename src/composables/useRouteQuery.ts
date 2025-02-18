@@ -1,5 +1,34 @@
 import { ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+
+let useRoute: any, useRouter: any
+if (typeof window !== 'undefined') {
+    // Check if it's a Nuxt environment
+    if (window?.__NUXT__ !== undefined) {
+        import('#app').then(module => {
+            useRoute = module.useRoute;
+            useRouter = module.useRouter;
+        }).catch(err => {
+            console.error('Error importing #app:', err);
+        });
+
+    } else {
+        // Dynamically import for Vue 3 (non-Nuxt)
+        import('vue-router').then(module => {
+            useRoute = module.useRoute;
+            useRouter = module.useRouter;
+        });
+    }
+}
+else {
+    if (process.server) {
+        import('#app').then(module => {
+            useRoute = module.useRoute;
+            useRouter = module.useRouter;
+        }).catch(err => {
+            console.error('Error importing #app:', err);
+        });
+    }
+}
 
 let route: any = undefined;
 let router: any = undefined;
@@ -25,9 +54,9 @@ let timer: any = null;
 function processParams(params: any, navigationType: 'push' | 'replace') {
     if (router && route && params) {
         if (navigationType === 'push') {
-            router.push({ query: { ...route.query, ...params } });
+            router.push({ query: { ...route?.query, ...params } });
         } else {
-            router.replace({ query: { ...route.query, ...params } });
+            router.replace({ query: { ...route?.query, ...params } });
         }
     }
 }
@@ -193,7 +222,7 @@ export function useRouteQuery(
 
     const queryValue = ref<typeQuery>(initialValue);
 
-    if (route.query?.[key]) {
+    if (route?.query?.[key]) {
         let rawValue = route.query[key] as string;
         let decoded = decodeQueryValue(rawValue, config.type, initialValue, config.delimiter);
         if (config.type === 'Array<number>' && Array.isArray(decoded)) {
@@ -222,7 +251,7 @@ export function useRouteQuery(
 
     // واکچ کردن مقدار موجود در route.query
     watch(
-        () => route.query[key],
+        () => route?.query[key],
         (newVal: any) => {
             if (newVal !== queryValue.value) {
                 let decoded = decodeQueryValue(newVal, config.type, initialValue, config.delimiter);
@@ -237,7 +266,7 @@ export function useRouteQuery(
     );
 
     // در صورتی که query خالی باشد ولی initialValue تعریف شده باشد
-    if (!route.query[key] && initialValue !== undefined) {
+    if (!route?.query[key] && initialValue !== undefined) {
         if (config.navigationType === 'push') {
             router
                 .push({ query: { ...route.query } })
@@ -250,4 +279,11 @@ export function useRouteQuery(
     }
 
     return queryValue;
+}
+
+
+declare global {
+    interface Window {
+        __NUXT__?: any;
+    }
 }
