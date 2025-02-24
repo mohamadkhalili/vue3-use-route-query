@@ -1,34 +1,5 @@
 import { ref, watch } from 'vue';
-
-let useRoute: any, useRouter: any
-if (typeof window !== 'undefined') {
-    // Check if it's a Nuxt environment
-    if (window?.__NUXT__ !== undefined) {
-        import('#app').then(module => {
-            useRoute = module.useRoute;
-            useRouter = module.useRouter;
-        }).catch(err => {
-            console.error('Error importing #app:', err);
-        });
-
-    } else {
-        // Dynamically import for Vue 3 (non-Nuxt)
-        import('vue-router').then(module => {
-            useRoute = module.useRoute;
-            useRouter = module.useRouter;
-        });
-    }
-}
-else {
-    if (process.server) {
-        import('#app').then(module => {
-            useRoute = module.useRoute;
-            useRouter = module.useRouter;
-        }).catch(err => {
-            console.error('Error importing #app:', err);
-        });
-    }
-}
+import { useRoute, useRouter } from 'vue-router';
 
 let route: any = undefined;
 let router: any = undefined;
