@@ -62,6 +62,7 @@ The <code>useRouteQuery</code> composable accepts three parameters:
 3. <code>config</code> (<code>UseRouteQueryConfig</code>): Configuration options for the query parameter.
     * <code>type</code> (<code>TypeQueryValues</code>): The type of the query parameter. Can be one of '<code>boolean'</code>, '<code>number</code>', '<code>string</code>', '<code>Array</code>', '<code>Array`<number>`</code>', '<code>Array`<string>`</code>', '<code>Array`<object>`</code>'.
     * <code>navigationType</code> (<code>'push' | 'replace'</code>): The navigation type used to update the query parameter in the URL. Use <code>'push'</code> to add a new entry to the history stack or <code>'replace'</code> to replace the current history entry.
+     * <code>delimiter</code> (<code>'string' | 'undefined'</code>): The delimiter of Arrays. <code>default: ','</code>
 
 #### Query Types
 
@@ -107,6 +108,7 @@ const userId = useRouteQuery('userId', 123, {
 const tags = useRouteQuery('tags', [], {
   type: 'Array',
   navigationType: 'replace',
+  delimiter: '|'
 });
 ```
 

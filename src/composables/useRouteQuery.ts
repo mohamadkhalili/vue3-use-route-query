@@ -44,7 +44,23 @@ export type typeQueryValues =
     | 'Array<number>'
     | 'Array<string>'
     | 'Array<object>';
-
+export type QueryTypeValues =
+    | 'boolean'
+    | 'number'
+    | 'string'
+    | 'Array'
+    | 'Array<number>'
+    | 'Array<string>'
+    | 'Array<object>';
+type QueryTypeMap = {
+    boolean: boolean;
+    number: number;
+    string: string;
+    Array: unknown[];
+    'Array<number>': number[];
+    'Array<string>': string[];
+    'Array<object>': object[];
+};
 
 // -----------------------------------
 // توابع رمزگذاری و رمزگشایی
@@ -175,23 +191,24 @@ export function decodeQueryValue(
  * }} config
  * @returns {Object} 
  */
-export function useRouteQuery(
+export function useRouteQuery<
+    T extends QueryTypeValues
+>(
     key: string,
-    initialValue: typeQuery,
+    initialValue: any,
     config: {
-        type: typeQueryValues;
+        type: T;
         navigationType: 'push' | 'replace';
         delimiter?: string;
     } = {
-            type: 'string',
+            type: 'string' as T,
             navigationType: 'replace',
             delimiter: ',', // به‌صورت پیش‌فرض و در صورت نیاز کاربر، می‌توان مقدار آن را تغییر داد
         }
 ) {
     route = useRoute();
     router = useRouter();
-
-    const queryValue = ref<typeQuery>(initialValue);
+    const queryValue = ref<QueryTypeMap[T]>(initialValue);
 
     if (route?.query?.[key]) {
         let rawValue = route.query[key] as string;
