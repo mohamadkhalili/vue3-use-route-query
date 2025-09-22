@@ -25,9 +25,9 @@ let timer: any = null;
 function processParams(params: any, navigationType: 'push' | 'replace') {
     if (router && route && params) {
         if (navigationType === 'push') {
-            router.push({ query: { ...route?.query, ...params } });
+            router.push({ query: { ...route?.query, ...params } }).catch((err: any) => console.error('Router push error:', err));
         } else {
-            router.replace({ query: { ...route?.query, ...params } });
+            router.replace({ query: { ...route?.query, ...params } }).catch((err: any) => console.error('Router replace error:', err));
         }
     }
 }
@@ -206,8 +206,19 @@ export function useRouteQuery<
             delimiter: ',', // به‌صورت پیش‌فرض و در صورت نیاز کاربر، می‌توان مقدار آن را تغییر داد
         }
 ) {
-    route = useRoute();
-    router = useRouter();
+    try {
+        route = useRoute();
+        router = useRouter();
+    } catch (error) {
+        console.warn('Vue Router not available. Make sure you are using this composable inside a Vue component with router setup.');
+        return ref(initialValue);
+    }
+
+    // Additional safety check
+    if (!router || !route) {
+        console.warn('Router or route is not available');
+        return ref(initialValue);
+    }
     const queryValue = ref<QueryTypeMap[T]>(initialValue);
 
     if (route?.query?.[key]) {
@@ -254,15 +265,15 @@ export function useRouteQuery<
     );
 
     // در صورتی که query خالی باشد ولی initialValue تعریف شده باشد
-    if (!route?.query[key] && initialValue !== undefined) {
+    if (!route?.query[key] && initialValue !== undefined && router && route) {
         if (config.navigationType === 'push') {
             router
                 .push({ query: { ...route.query } })
-                .catch((err: any) => console.error(err));
+                .catch((err: any) => console.error('Router push error:', err));
         } else {
             router
                 .replace({ query: { ...route.query } })
-                .catch((err: any) => console.error(err));
+                .catch((err: any) => console.error('Router replace error:', err));
         }
     }
 

@@ -1,6 +1,16 @@
 # vue3-use-route-query
 
-A Vue 3 composable to get and set URL query parameters reactively with support for different data types like `string`, `boolean`, `Array`, `number`, and `...`.
+A Vue 3 composable to get and set URL query parameters reactively with support for different data types like `string`, `boolean`, `Array`, `number`, and more. **Now with enhanced Nuxt3 support and improved error handling!**
+
+## Features
+
+✨ **Reactive URL query parameters** - Automatically sync with Vue's reactivity system  
+🔄 **Bidirectional binding** - Changes in URL reflect in your component and vice versa  
+📝 **Multiple data types** - Support for `string`, `boolean`, `number`, `Array`, and `Array<object>`  
+🛡️ **Type safety** - Full TypeScript support with proper type inference  
+⚡ **Nuxt3 compatible** - Works seamlessly with both Vue 3 and Nuxt 3 applications  
+🔧 **Configurable** - Custom delimiters, navigation types, and initial values  
+🚀 **SSR friendly** - Graceful degradation for server-side rendering
 
 ## Installation
 
@@ -10,14 +20,49 @@ You can install the package via npm:
 npm install vue3-use-route-query
 ```
 
+Or with yarn:
+
+```bash
+yarn add vue3-use-route-query
+```
+
+Or with pnpm:
+
+```bash
+pnpm add vue3-use-route-query
+```
+
 ## Usage
 
-### Importing the Plugin
+### Importing the Composable
 
-After installation, you can use the plugin by importing useRouteQuery in your Vue components. You do not need to manually install the plugin; just import and use it.
+After installation, you can use the composable by importing `useRouteQuery` in your Vue components or Nuxt pages. No additional setup or plugin registration is required.
 
 ```ts
 import { useRouteQuery } from 'vue3-use-route-query';
+```
+
+### Nuxt 3 Usage
+
+This package works out of the box with Nuxt 3. Simply import and use it in your pages or components:
+
+```vue
+<!-- pages/index.vue or components/MyComponent.vue -->
+<template>
+  <div>
+    <input v-model="searchQuery" placeholder="Search..." />
+    <p>Current search: {{ searchQuery }}</p>
+  </div>
+</template>
+
+<script setup>
+import { useRouteQuery } from 'vue3-use-route-query'
+
+const searchQuery = useRouteQuery('q', '', {
+  type: 'string',
+  navigationType: 'replace'
+})
+</script>
 ```
 
 ### Example: Using useRouteQuery
@@ -144,9 +189,46 @@ watch([queryValue1,queryValue2], () => {
 });
 ```
 
+## Error Handling
+
+The composable includes robust error handling for various scenarios:
+
+- **Router not available**: Gracefully degrades when Vue Router is not properly initialized
+- **SSR compatibility**: Works safely during server-side rendering 
+- **Navigation errors**: Catches and logs router navigation errors
+- **Type conversion errors**: Handles invalid data types gracefully
+
+## Troubleshooting
+
+### Common Issues
+
+**Error: "Cannot read properties of undefined (reading 'push')"**
+- This was a common issue in earlier versions, now fixed with enhanced error handling
+- Make sure you're using the latest version of the package
+- Ensure Vue Router is properly set up in your application
+
+**Nuxt 3 compatibility**
+- The package now includes specific optimizations for Nuxt 3
+- No additional configuration needed - it works out of the box
+
+### Best Practices
+
+1. **Use inside components**: Always call `useRouteQuery` inside a Vue component's setup function or `<script setup>`
+2. **Handle initial values**: Provide sensible default values for better UX
+3. **Type safety**: Specify the correct type in the configuration for better TypeScript support
+4. **Performance**: Use `navigationType: 'replace'` for frequently changing values to avoid cluttering browser history
+
 Returns
 
 A <code>Ref</code> that contains the current value of the query parameter. This value is reactive and will automatically update when the query parameter in the URL changes, and vice versa.
+
+## Changelog
+
+### Latest Updates
+- 🐛 **Fixed**: Router undefined errors in Nuxt 3 and SSR environments
+- 🔧 **Enhanced**: Better error handling and graceful degradation
+- 📈 **Improved**: More robust initialization and safety checks
+- 🛡️ **Added**: Comprehensive error logging for debugging
 
 ## License
 

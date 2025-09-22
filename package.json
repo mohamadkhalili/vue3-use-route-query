@@ -1,6 +1,6 @@
 {
   "name": "vue3-use-route-query",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "author": "Mohamad Khalili",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -20,12 +20,14 @@
   },
   "keywords": [
     "vue3",
+    "nuxt3",
     "useRouteQuery",
     "route",
     "routeQuery",
     "query",
     "queryParam",
-    "reactive"
+    "reactive",
+    "composable"
   ],
   "license": "MIT",
   "devDependencies": {
