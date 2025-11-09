@@ -33,7 +33,7 @@ function processParams(params: any, navigationType: 'push' | 'replace') {
 }
 
 // -----------------------------------
-// نوع‌های قابل پشتیبانی
+// Supported types
 // -----------------------------------
 export type typeQuery = boolean | number | string | Array<string> | Array<number> | Array<any> | undefined
 export type typeQueryValues =
@@ -63,7 +63,7 @@ type QueryTypeMap = {
 };
 
 // -----------------------------------
-// توابع رمزگذاری و رمزگشایی
+// Encoding and decoding functions
 // -----------------------------------
 function encodeBoolean(value: boolean | undefined): string | undefined {
     if (value === undefined) return undefined;
@@ -96,7 +96,7 @@ function decodeString(value: string | undefined): string | undefined {
 }
 
 /**
- * @description در اینجا delimiter را به‌صورت پارامتر به توابع اضافه می‌کنیم.
+ * @description Here we add delimiter as a parameter to the functions.
  */
 function encodeArray(value: (string | number)[] | undefined, delimiter: string = ','): string | undefined {
     if (!value || value.length === 0) return undefined;
@@ -127,7 +127,7 @@ function decodeArrayObject(value: string | undefined, initialValue: any[] | unde
 }
 
 /**
- * @description این تابع را نیز تغییر می‌دهیم تا delimiter را پشتیبانی کند.
+ * @description We also modify this function to support delimiter.
  */
 export function encodeQueryValue(
     value: typeQuery,
@@ -154,7 +154,7 @@ export function encodeQueryValue(
 }
 
 /**
- * @description این تابع را نیز تغییر می‌دهیم تا delimiter را پشتیبانی کند.
+ * @description We also modify this function to support delimiter.
  */
 export function decodeQueryValue(
     rawValue: string | undefined,
@@ -203,7 +203,7 @@ export function useRouteQuery<
     } = {
             type: 'string' as T,
             navigationType: 'replace',
-            delimiter: ',', // به‌صورت پیش‌فرض و در صورت نیاز کاربر، می‌توان مقدار آن را تغییر داد
+            delimiter: ',', // Default value, can be changed by user if needed
         }
 ) {
     try {
@@ -231,13 +231,13 @@ export function useRouteQuery<
         }
     }
 
-    // واکچ کردن مقدار queryValue برای اعمال تغییر در URL
+    // Watch queryValue for applying changes to the URL
     watch(
         queryValue,
         (newVal) => {
             let encodedVal = encodeQueryValue(newVal, config.type, config.delimiter);
             if (config.type === 'Array<number>' && Array.isArray(newVal)) {
-                // اگر نوع آرایه عددی بود، مجدداً از encodeArray استفاده می‌کنیم
+                // If the type is a numeric array, use encodeArray again
                 encodedVal = encodeArray(newVal, config.delimiter);
             }
             (globalParam as any).addQueryParam(
@@ -248,7 +248,7 @@ export function useRouteQuery<
         { deep: true }
     );
 
-    // واکچ کردن مقدار موجود در route.query
+    // Watch the current value in route.query
     watch(
         () => route?.query[key],
         (newVal: any) => {
@@ -264,7 +264,7 @@ export function useRouteQuery<
         { flush: 'sync' }
     );
 
-    // در صورتی که query خالی باشد ولی initialValue تعریف شده باشد
+    // If query is empty but initialValue is defined
     if (!route?.query[key] && initialValue !== undefined && router && route) {
         if (config.navigationType === 'push') {
             router
