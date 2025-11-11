@@ -51,7 +51,9 @@ function processParams(params: any, navigationType: 'push' | 'replace') {
     }
 }
 
-// Type definitions for query parameters
+// -----------------------------------
+// Supported types
+// -----------------------------------
 export type typeQuery = boolean | number | string | Array<string> | Array<number> | Array<any> | undefined
 export type typeQueryValues =
     | 'boolean'
@@ -293,7 +295,7 @@ export function useRouteQuery<
     } = {
             type: 'string' as T,
             navigationType: 'replace',
-            delimiter: ','
+            delimiter: ',', // Default value, can be changed by user if needed
         }
 ) {
     // Local route reference for this composable instance
@@ -430,6 +432,7 @@ export function useRouteQuery<
 
             // Special handling for number arrays
             if (config.type === 'Array<number>' && Array.isArray(newVal)) {
+                // If the type is a numeric array, use encodeArray again
                 encodedVal = encodeArray(newVal, config.delimiter);
             }
 
@@ -442,7 +445,6 @@ export function useRouteQuery<
         { deep: true }
     );
 
-    // Watch for URL query changes and update local value
     watch(
         currentQueryValue,
         (newVal: any) => {
