@@ -1,6 +1,6 @@
 {
   "name": "vue3-use-route-query",
-  "version": "2.4.0",
+  "version": "2.4.3",
   "author": "Mohamad Khalili",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "postinstall": "tsc"
   },
   "keywords": [

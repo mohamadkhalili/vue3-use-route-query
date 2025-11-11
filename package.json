@@ -5,11 +5,18 @@
   "main": "index.js",
   "scripts": {
     "build": "pnpm --filter vue3-use-route-query build",
+    "publish-query": "pnpm --filter vue3-use-route-query publish",
+    "build:watch": "pnpm --filter vue3-use-route-query build:watch",
     "dev-vue": "pnpm --filter playground-vue dev",
-    "dev-nuxt": "pnpm --filter playground-nuxt dev"
+    "dev-vue:watch": "concurrently \"pnpm run build:watch\" \"pnpm --filter playground-vue dev\"",
+    "dev-nuxt": "pnpm --filter playground-nuxt dev",
+    "dev-nuxt:watch": "concurrently \"pnpm run build:watch\" \"pnpm --filter playground-nuxt dev\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.12.4"
+  "packageManager": "pnpm@10.12.4",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
 }
