@@ -1,5 +1,7 @@
 # vue3-use-route-query
 
+[![npm](https://img.shields.io/npm/v/vue3-use-route-query)](https://www.npmjs.com/package/vue3-use-route-query)
+
 A Vue 3 composable to get and set URL query parameters reactively with support for different data types like `string`, `boolean`, `Array`, `number`, and more. **Now with enhanced Nuxt3 support and improved error handling!**
 
 ## Features
@@ -13,6 +15,8 @@ A Vue 3 composable to get and set URL query parameters reactively with support f
 🚀 **SSR friendly** - Graceful degradation for server-side rendering
 
 ## Installation
+
+📦 **npm package**: [vue3-use-route-query](https://www.npmjs.com/package/vue3-use-route-query)
 
 You can install the package via npm:
 
