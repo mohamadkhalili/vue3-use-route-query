@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <client-only>
         <CounterAction />
         <p>
             routeQuery: {{ routeQuery }}
@@ -7,7 +7,7 @@
         <p>
             routeQueryType: {{ typeof routeQuery }}
         </p>
-    </div>
+    </client-only>
 </template>
 
 <script setup lang="ts">

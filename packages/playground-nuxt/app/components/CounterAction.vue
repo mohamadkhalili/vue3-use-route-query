@@ -1,5 +1,7 @@
 <template>
-    <button @click="routeQuery++">Add count query 1</button>
+    <client-only>
+        <button @click="routeQuery++">Add count query 1</button>
+    </client-only>
 </template>
 
 <script setup lang="ts">
