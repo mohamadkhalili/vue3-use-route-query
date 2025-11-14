@@ -1,14 +1,5 @@
 import { ref, watch, computed } from 'vue';
 
-// Type declarations for global scope
-declare global {
-    interface Window {
-        __NUXT__?: any;
-        paramsQueue?: any;
-        addQueryParam?: (param: any, navigationType: 'push' | 'replace') => void;
-    }
-}
-
 // Global variables for route and router instances
 let routeGetter: any = undefined;
 let router: any = undefined;
