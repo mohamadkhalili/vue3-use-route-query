@@ -17,8 +17,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc --watch",
-    "postinstall": "tsc"
+    "build:watch": "tsc --watch"
   },
   "keywords": [
     "vue3",
